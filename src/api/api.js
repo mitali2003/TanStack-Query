@@ -25,3 +25,19 @@ export const fetchIndividualData = async (id) => {
     console.log(error);
   }
 };
+
+export const deletePost = async (id) => {
+  try {
+    return await api.delete(`/posts/${id}`);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updatePost = async (id) => {
+  try {
+    return await api.patch(`/posts/${id}`, { title: "I have updated!" });
+  } catch (error) {
+    console.log(error);
+  }
+};
