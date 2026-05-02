@@ -45,6 +45,13 @@ const Header = () => {
           >
             <NavLink to="/rq">FetchRQ</NavLink>
           </li>
+          <li
+            style={{
+              listStyleType: "none",
+            }}
+          >
+            <NavLink to="/infinite">Infinite Scrolling</NavLink>
+          </li>
         </ul>
       </div>
     </header>

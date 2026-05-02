@@ -6,6 +6,7 @@ import FetchRq from "./pages/FetchRq";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import FetchIndividualPage from "./pages/FetchIndividualPage";
+import InfiniteScrolling from "./pages/InfiniteScrolling";
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: "/rq/:id",
         element: <FetchIndividualPage />,
+      },
+      {
+        path: "infinite",
+        element: <InfiniteScrolling />,
       },
     ],
   },
