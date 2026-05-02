@@ -1,7 +1,12 @@
-import { useNavigate } from "react-router-dom";
-import { fetchPostData } from "../api/api";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { deletePost, fetchPostData, updatePost } from "../api/api";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 const FetchRq = () => {
   const navigate = useNavigate();
@@ -14,6 +19,33 @@ const FetchRq = () => {
     // refetchInterval: 1000, //call api after every 1sec.
     // refetchIntervalInBackground: true,
     placeholderData: keepPreviousData, //If I'm not using this then while data is loading at that time it display loading text and then data but I dont need to display loading text so use this property.
+  });
+
+  const queryClint = useQueryClient();
+
+  const deleteMutaion = useMutation({
+    mutationFn: (id) => deletePost(id),
+    onSuccess: (data, id) => {
+      queryClint.setQueryData(["posts", pageNumber], (data) =>
+        data.filter((post) => post.id !== id),
+      );
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: (id) => updatePost(id),
+    onSuccess: (apiData, postId) => {
+      queryClint.setQueryData(["posts", pageNumber], (postData) =>
+        postData.map((el) =>
+          el.id === postId
+            ? {
+                ...el,
+                title: apiData.data.title,
+              }
+            : el,
+        ),
+      );
+    },
   });
 
   if (isLoading) return <p>Loading...</p>;
@@ -45,6 +77,40 @@ const FetchRq = () => {
             <p>{title}</p>
             maxWidth:"500px"
             <p>{body}</p>
+            <div
+              style={{
+                gap: "8px",
+              }}
+            >
+              <button
+                style={{
+                  backgroundColor: "red",
+                  color: "white",
+                  padding: "8px",
+                  borderRadius: "8px",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteMutaion.mutate(id);
+                }}
+              >
+                Delete
+              </button>
+              <button
+                style={{
+                  backgroundColor: "green",
+                  color: "white",
+                  padding: "8px",
+                  borderRadius: "8px",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  updateMutation.mutate(id);
+                }}
+              >
+                Update
+              </button>
+            </div>
           </div>
         ))}
       </div>
